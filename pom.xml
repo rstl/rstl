@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.rstlang</groupId>
+    <artifactId>rstl-parent</artifactId>
+    <version>0.1-SNAPSHOT</version>
+
+    <name>Resoure Oriented Template Language</name>
+    <url>http://rstlang.org/</url>
+    <description>The Resource Oriented Template language allows you to build extensible, layout based web sites featuring resource oriented paradigms</description>
+    <inceptionYear>2012</inceptionYear>
+    <packaging>pom</packaging>
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.0</version>
+                    <configuration>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <goals>deploy site-deploy</goals>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <configuration>
+                    <inputEncoding>UTF-8</inputEncoding>
+                    <outputEncoding>UTF-8</outputEncoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>maven3</id>
+            <activation>
+                <file>
+                    <!-- This employs that the basedir expression is only
+                        recognized by Maven 3.x (see MNG-2363) -->
+                    <exists>${basedir}</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>3.0-beta-3</version>
+                        <configuration>
+                            <inputEncoding>UTF-8</inputEncoding>
+                            <outputEncoding>UTF-8</outputEncoding>
+                            <reportPlugins>
+                                <plugin>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-project-info-reports-plugin
+                                    </artifactId>
+                                    <version>2.2</version>
+                                </plugin>
+                                <plugin>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-javadoc-plugin</artifactId>
+                                    <version>2.7</version>
+                                    <configuration>
+                                        <excludePackageNames>org.rstlang.example</excludePackageNames>
+                                        <links>
+                                            <link>http://java.sun.com/j2se/1.5.0/docs/api/
+                                            </link>
+                                            <link>http://commons.apache.org/lang/api-release/
+                                            </link>
+                                        </links>
+                                    </configuration>
+                                    <reports>
+                                        <report>javadoc</report>
+                                        <report>aggregate</report>
+                                    </reports>
+                                </plugin>
+                                <plugin>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-changelog-plugin</artifactId>
+                                    <version>2.2</version>
+                                </plugin>
+                            </reportPlugins>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin
+                </artifactId>
+                <version>2.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
+
+    <modules>
+        <module>rstl-core</module>
+    </modules>
+</project>
