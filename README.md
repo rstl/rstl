@@ -18,9 +18,9 @@ of values from the template context that maps to the same name.
 For example the following snippet references an attribute named "user" from the context used to
 render the template.
 
-'''django
+```django
 {{user}}
-'''
+```
 
 Variables may reference attributes of the context values using a "." notation. If the variable is a Map
 object, then the attribute value is fetched from the Map object. If it is a regular Java object, then it
@@ -28,24 +28,24 @@ uses a getter method to retrieve the attribute value. In the snippet below, the 
 object referenced as "user" in the context is retrieved if the "user" object is an instance of a Map. 
 If the object is not a map, then the getFullname() method of the object is invoked.
 
-'''django
+```django
 {{user.fullname}}
-'''
+```
 
 Variable values that are lists may be indexed using a numeric attribute specifying the index within the
 list. The following snippet references the 10th element in a list of names.*
 
-'''django
+```django
 {{names.10}}
-'''
+```
 
 Variable values may be filtered using a Unix style pipe filter with predefined or custom filters. The
 "name" attribute of a variable named "store" in the context is lower cased using the "lower" filter, the
 result of which is then url encoded using the "urlencode" filter in the example below.
 
-'''django
+```django
 {{store.name|lower|urlencode}}
-'''
+```
 
 The built-in filters supported by the language follow:
 
@@ -61,9 +61,9 @@ statement. The extends statement if specified in a template must necessarily be 
 the template. In the snippet below, the containing template inherits from a template name
 "fragments/213liquidlayout.html".
 
-'''django
+```django
 {% extends "fragments/213liquidlayout.html"%}
-'''
+```
 
 ### include
 The include statement declares that template should include rendered content from the specified
@@ -71,9 +71,9 @@ template. Note, that this does not mean that the template content is substituted
 template . Rather, the template will invoke the included template with context provided to the current
 template. The following snippet includes content from a template "fragments/includejs.html".
 
-'''django
+```django
 {% include "fragments/includejs.html" %}
-'''
+```
 
 ### block
 The block statement specifies the beginning of a named block. A named block is a place holder in the
@@ -86,19 +86,19 @@ appended to the template output. It is possible to reference the content of a bl
 template's parent using the special variable "block.super". The following snippet shows a block
 named main that renders an empty div.
 
-'''django
+```django
 {% block main %}
 <div></div>
 {% endblock %}
-'''
+```
 
 ### endblock
 The endblock statement specifies the end of a named block. The name of the block that it terminates is
 an optional attribute of the statement.
 
-'''django
+```django
 {% endblock main %}
-'''
+```
 
 ### for
 The for statement is one of the control statements in the template language that iterates over the
@@ -113,27 +113,27 @@ contents of a list. There are a few builtin variables that are available with in
 The following snippet iterates through a list (names) set in the context and renders each value (name)
 in a loop.
 
-'''django
+```django
 {%for name in names%}
 {{forloop.counter}}) {{name}}
 {%endfor%}
-'''
+```
 
 If the context variable names is set to the list ["Roger", "Fran", "Barney"], the snippet above would
 produce
 
-'''
+```
 1) Roger
 2) Fran
 3) Barney
-'''
+```
 
 ### endfor
 The endfor statement terminates a for loop as shown below.
 
-'''django
+```django
 {%endfor%}
-'''
+```
 
 ### if
 The if statement is a control construct in the template language that allows for conditional rendering
@@ -141,29 +141,29 @@ of a portion of the template. The following snippet renders content based on the
 variable. If the context variable is a boolean variable, then the conditional clause evaluates if the
 variable evaluates to true.
 
-'''django
+```django
 {%if product.item%}
 This product is an item.
 {%endif%}
-'''
+```
 
 ### else
 The else statement is an optional construct within a if statement block
 
-'''django
+```django
 {%if product.item%}
 This product is an item.
 {%else%}
 This product is not an item.
 {%endif%}
-'''
+```
 
 ### endif
 The endif statement terminates an if and/or optionally an else statement.
 
-'''django
+```django
 {%endif%}
-'''
+```
 
 ### resourcegroup*
 The resourcegroup statement is a named block construct that allows for zero or more resource
@@ -171,20 +171,20 @@ statements. It may be inherited and overridden exactly like a block statement, e
 contain XHTML variant of resource statements. A resource group is used as a place holder and is
 primarily used as a construct to aid in easy (tooled) manipulation of resources within the group.
 
-'''django
+```django
 {%resourcegroup centerspot%}
 {%resource.xhtml /wcs/resources/marketing/springsavings%}
 {%resource.xhtml /wcs/resources/marketing/bogo%}
 {%endresourcegroup%}
-'''
+```
 
 ### endresourcegroup*
 The endresourcegroup statement terminates a resourcegroup block and may optionally contain the
 name of the group that it terminates.
 
-'''django
+```django
 {%endresourcegroup centerspot%}
-'''
+```
 
 ### resource*
 The resource statement allows the template to reference RESTful resources identified by their URI.
@@ -196,20 +196,20 @@ variant may take an optional widget name which the template engine will bind to 
 This variant of the resource statement is primarily used to render the representation along with the
 template output, usually within a espot statement block.
 
-'''django
+```django
 {%resource.xhtml /wcs/resources/marketing/{categoryid}/featuredproducts with scrollablepane%}
 {%resource.xhtml /wcs/resources/marketing/bogo%}
-'''
+```
 
 The statement resource.json binds the JSON representation of the resource to the context using the
 provided context name. The template may then reference attributes of the resource. It is recommended
 that such references to resources be made outside control constructs so that the template engine may
 pre-process them prior to rendering the template output.
 
-'''django
+```django
 {%resource.json /wcs/resources/product/(productid} as prod%}
 {%resource.json /wcs/resources/user/{userid} as user%}
-'''
+```
 
 ### precondition*
 The precondition statement allows the template engine to choose from a set of possible templates by
@@ -224,11 +224,15 @@ of them have to match for the template to be selected. The set of built-in preco
 * _precondition.weekend_ - The request is made on a weekend
 * _precondition.yahoo_ - The request is from a yahoo search result
 
-'''django
+```django
 {%precondition.authorized%}
 {%precondition.google%}
-'''
+```
 
 ### layout*
 The layout statement is used to specify the layout - the way content is laid out in a page. Layout
 statements may be inherited by templates or overriden just like blocks and espots.
+
+```django
+{% layout "myfavoritelayout.html"%}
+```
