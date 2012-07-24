@@ -57,9 +57,9 @@ The built-in filters supported by the language follow:
 
 ### Template tags
 
-#### extends
-The extends statement declares that the template inherits content from the parent specified in the
-statement. The extends statement if specified in a template must necessarily be the first statement in
+#### _extends_
+The _extends_ statement declares that the template inherits content from the parent specified in the
+statement. The _extends_ statement if specified in a template must necessarily be the first statement in
 the template. In the snippet below, the containing template inherits from a template name
 "fragments/213liquidlayout.html".
 
@@ -67,8 +67,8 @@ the template. In the snippet below, the containing template inherits from a temp
 {% extends "fragments/213liquidlayout.html"%}
 ```
 
-#### include
-The include statement declares that template should include rendered content from the specified
+#### _include_
+The _include_ statement declares that template should include rendered content from the specified
 template. Note, that this does not mean that the template content is substituted in to the current
 template . Rather, the template will invoke the included template with context provided to the current
 template. The following snippet includes content from a template "fragments/includejs.html".
@@ -77,8 +77,8 @@ template. The following snippet includes content from a template "fragments/incl
 {% include "fragments/includejs.html" %}
 ```
 
-#### block
-The block statement specifies the beginning of a named block. A named block is a place holder in the
+#### _block_
+The _block_ statement specifies the beginning of a named block. A named block is a place holder in the
 template output that can be overriden by a inherited template. While a block may be nested within
 another block, block names and definition are global to the template scope. If a template does not
 override the block, the default content specified in the ancestor template will be rendered. The
@@ -94,16 +94,16 @@ named main that renders an empty div.
 {% endblock %}
 ```
 
-#### endblock
-The endblock statement specifies the end of a named block. The name of the block that it terminates is
+#### _endblock_
+The _endblock_ statement specifies the end of a named block. The name of the block that it terminates is
 an optional attribute of the statement.
 
 ```django
 {% endblock main %}
 ```
 
-#### for
-The for statement is one of the control statements in the template language that iterates over the
+#### _for_
+The _for_ statement is one of the control statements in the template language that iterates over the
 contents of a list. There are a few builtin variables that are available with in a for loop. These are
 
 * _forloop.counter_ - the current iteration count through the loop (1-indexed)
@@ -130,15 +130,15 @@ produce
 3) Barney
 ```
 
-#### endfor
-The endfor statement terminates a for loop as shown below.
+#### _endfor_
+The _endfor_ statement terminates a for loop as shown below.
 
 ```django
 {%endfor%}
 ```
 
-#### if
-The if statement is a control construct in the template language that allows for conditional rendering
+#### _if_
+The _if_ statement is a control construct in the template language that allows for conditional rendering
 of a portion of the template. The following snippet renders content based on the presence of a context
 variable. If the context variable is a boolean variable, then the conditional clause evaluates if the
 variable evaluates to true.
@@ -149,8 +149,8 @@ This product is an item.
 {%endif%}
 ```
 
-#### else
-The else statement is an optional construct within a if statement block
+#### _else_
+The _else_ statement is an optional construct within a if statement block
 
 ```django
 {%if product.item%}
@@ -160,15 +160,15 @@ This product is not an item.
 {%endif%}
 ```
 
-#### endif
-The endif statement terminates an if and/or optionally an else statement.
+#### _endif_
+The _endif_ statement terminates an if and/or optionally an else statement.
 
 ```django
 {%endif%}
 ```
 
-#### resourcegroup*
-The resourcegroup statement is a named block construct that allows for zero or more resource
+#### _resourcegroup_*
+The _resourcegroup_ statement is a named block construct that allows for zero or more resource
 statements. It may be inherited and overridden exactly like a block statement, except that it may only
 contain XHTML variant of resource statements. A resource group is used as a place holder and is
 primarily used as a construct to aid in easy (tooled) manipulation of resources within the group.
@@ -180,7 +180,7 @@ primarily used as a construct to aid in easy (tooled) manipulation of resources 
 {%endresourcegroup%}
 ```
 
-#### endresourcegroup*
+#### _endresourcegroup_*
 The endresourcegroup statement terminates a resourcegroup block and may optionally contain the
 name of the group that it terminates.
 
@@ -188,8 +188,8 @@ name of the group that it terminates.
 {%endresourcegroup centerspot%}
 ```
 
-#### resource*
-The resource statement allows the template to reference RESTful resources identified by their URI.
+#### _resource_*
+The _resource_ statement allows the template to reference RESTful resources identified by their URI.
 The URI may contain variable references to context variables with single curly braces as shown in the
 examples below which are resolved by the template engine prior to fetching the resource
 representations. There are two variants of the resource statement.
@@ -213,8 +213,8 @@ pre-process them prior to rendering the template output.
 {%resource.json /wcs/resources/user/{userid} as user%}
 ```
 
-#### precondition*
-The precondition statement allows the template engine to choose from a set of possible templates by
+#### _precondition_*
+The _precondition_ statement allows the template engine to choose from a set of possible templates by
 matching a set of built-in or custom preconditions. When more than one precondition is specified, all
 of them have to match for the template to be selected. The set of built-in preconditions are :
 
@@ -231,8 +231,8 @@ of them have to match for the template to be selected. The set of built-in preco
 {%precondition.google%}
 ```
 
-#### layout*
-The layout statement is used to specify the layout - the way content is laid out in a page. Layout
+#### _layout_*
+The _layout_ statement is used to specify the layout - the way content is laid out in a page. Layout
 statements may be inherited by templates or overriden just like blocks and espots.
 
 ```django
