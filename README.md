@@ -11,7 +11,7 @@ RSTL will run with any version of Java runtime greater than version 1.5.
 Template language syntax
 ------------------------
 
-### Variables
+### Template variables
 
 Variables in the template language are referenced with in double curly braces and cause substitution
 of values from the template context that maps to the same name.
@@ -55,7 +55,9 @@ The built-in filters supported by the language follow:
 * _join_ - Join a list of objects into a single string
 * _xmlescape_ - Escape the variable value so that any XML elements are escaped according to XML escaping rules
 
-### extends
+### Template tags
+
+#### extends
 The extends statement declares that the template inherits content from the parent specified in the
 statement. The extends statement if specified in a template must necessarily be the first statement in
 the template. In the snippet below, the containing template inherits from a template name
@@ -65,7 +67,7 @@ the template. In the snippet below, the containing template inherits from a temp
 {% extends "fragments/213liquidlayout.html"%}
 ```
 
-### include
+#### include
 The include statement declares that template should include rendered content from the specified
 template. Note, that this does not mean that the template content is substituted in to the current
 template . Rather, the template will invoke the included template with context provided to the current
@@ -75,7 +77,7 @@ template. The following snippet includes content from a template "fragments/incl
 {% include "fragments/includejs.html" %}
 ```
 
-### block
+#### block
 The block statement specifies the beginning of a named block. A named block is a place holder in the
 template output that can be overriden by a inherited template. While a block may be nested within
 another block, block names and definition are global to the template scope. If a template does not
@@ -92,7 +94,7 @@ named main that renders an empty div.
 {% endblock %}
 ```
 
-### endblock
+#### endblock
 The endblock statement specifies the end of a named block. The name of the block that it terminates is
 an optional attribute of the statement.
 
@@ -100,7 +102,7 @@ an optional attribute of the statement.
 {% endblock main %}
 ```
 
-### for
+#### for
 The for statement is one of the control statements in the template language that iterates over the
 contents of a list. There are a few builtin variables that are available with in a for loop. These are
 
@@ -128,14 +130,14 @@ produce
 3) Barney
 ```
 
-### endfor
+#### endfor
 The endfor statement terminates a for loop as shown below.
 
 ```django
 {%endfor%}
 ```
 
-### if
+#### if
 The if statement is a control construct in the template language that allows for conditional rendering
 of a portion of the template. The following snippet renders content based on the presence of a context
 variable. If the context variable is a boolean variable, then the conditional clause evaluates if the
@@ -147,7 +149,7 @@ This product is an item.
 {%endif%}
 ```
 
-### else
+#### else
 The else statement is an optional construct within a if statement block
 
 ```django
@@ -158,14 +160,14 @@ This product is not an item.
 {%endif%}
 ```
 
-### endif
+#### endif
 The endif statement terminates an if and/or optionally an else statement.
 
 ```django
 {%endif%}
 ```
 
-### resourcegroup*
+#### resourcegroup*
 The resourcegroup statement is a named block construct that allows for zero or more resource
 statements. It may be inherited and overridden exactly like a block statement, except that it may only
 contain XHTML variant of resource statements. A resource group is used as a place holder and is
@@ -178,7 +180,7 @@ primarily used as a construct to aid in easy (tooled) manipulation of resources 
 {%endresourcegroup%}
 ```
 
-### endresourcegroup*
+#### endresourcegroup*
 The endresourcegroup statement terminates a resourcegroup block and may optionally contain the
 name of the group that it terminates.
 
@@ -186,7 +188,7 @@ name of the group that it terminates.
 {%endresourcegroup centerspot%}
 ```
 
-### resource*
+#### resource*
 The resource statement allows the template to reference RESTful resources identified by their URI.
 The URI may contain variable references to context variables with single curly braces as shown in the
 examples below which are resolved by the template engine prior to fetching the resource
@@ -211,7 +213,7 @@ pre-process them prior to rendering the template output.
 {%resource.json /wcs/resources/user/{userid} as user%}
 ```
 
-### precondition*
+#### precondition*
 The precondition statement allows the template engine to choose from a set of possible templates by
 matching a set of built-in or custom preconditions. When more than one precondition is specified, all
 of them have to match for the template to be selected. The set of built-in preconditions are :
@@ -229,10 +231,82 @@ of them have to match for the template to be selected. The set of built-in preco
 {%precondition.google%}
 ```
 
-### layout*
+#### layout*
 The layout statement is used to specify the layout - the way content is laid out in a page. Layout
 statements may be inherited by templates or overriden just like blocks and espots.
 
 ```django
 {% layout "myfavoritelayout.html"%}
+```
+
+Usage
+-----
+
+Templates are primarily meant to be rendered by any Java code. To render a
+template, you need to specify the location of the templates. This location is used to initialize a
+template group as follows where the "templates" directory in the current working directory is the
+location of the templates.
+
+```java
+TemplateGroup tg = new TemplateGroup("templates");
+```
+
+The template context is then set up by the java code. In the example below a list of names is set up in
+the template context.
+```java
+Map<String, Object> initContext = new HashMap<String, Object>();
+List<String> names = Arrays.asList("John", "Fred", "Betsy");
+initContext.put("names", names);
+WCSTemplateContextImpl ctx = new WCSTemplateContextImpl(initContext, tg);
+```
+
+If the template to be rendered resides in "stores/default/guest.html" in the "templates" directory used
+to initialize the template group above, then the template may be rendered as follows where w is a
+Writer object to which the template output will be written to.
+
+```java
+tg.render("stores/default/guest.html", ctx, w);
+```
+
+In the example below "guest.ctl" inherits from another template "layouts/nolayout.ctl" and renders the
+names in a for loop with in a block named "content".
+
+```django
+{% extends "layouts/nolayout.html" %}
+{% block content%}
+<ul>
+{%for name in names %}
+<li> {{name}} </li>
+{%endfor%}
+</ul>
+{% endblock content %}
+```
+
+The template "nolayout.html" defines the original content of the block and where the block should be
+rendered as follows.
+
+```django
+<html>
+  <head>
+  </head>
+  <body>
+	{%block content%}{%endblock%}
+  </body>
+</html>
+```
+
+With the template context as defined above, the template would be rendered as
+
+```html
+<html>
+  <head>
+  </head>
+  <body>
+	<ul>
+ 	  <li> John </li>
+	  <li> Fred </li>
+	  <li> Betsy </li>
+	</ul>
+  </body>
+</html>
 ```
