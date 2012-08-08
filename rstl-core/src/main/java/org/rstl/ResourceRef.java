@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,10 +25,13 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.rstl.context.TemplateContext;
 import org.rstl.resource.client.ResourceRegistry;
 
-import com.ibm.json.java.JSON;
+
 
 /**
  * Implementation of the resource references in a template
@@ -155,9 +158,10 @@ public class ResourceRef {
 						&& format.equalsIgnoreCase("json")
 						&& variableName != null & !variableName.isEmpty()) {
 					
-					Object jsonObj = JSON.parse(reader);
-					if (jsonObj instanceof Map) {
-						Map<String, Object> jObj = (Map<String, Object>) jsonObj;
+					JSONTokener jTok = new JSONTokener(reader);
+					try {
+						JSONObject jObj = new JSONObject(jTok);
+					
 						jObj.put("resourceid", resolvedResourceName);
 						if (null != templateInfo) {
 							jObj.put("genericid", resourceName);
@@ -166,9 +170,11 @@ public class ResourceRef {
 								jObj.put(key, templateInfo.get(key));
 							}
 						}
-						jsonObj = jObj;
+
+						ctxt.put(variableName, jObj);
+					} catch (JSONException jex) {
+						// Log the exception
 					}
-					ctxt.put(variableName, jsonObj);
 					
 				} else {
 					// write the representation to the provided writer
