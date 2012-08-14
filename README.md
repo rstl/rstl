@@ -175,8 +175,8 @@ primarily used as a construct to aid in easy (tooled) manipulation of resources 
 
 ```django
 {%resourcegroup centerspot%}
-{%resource.xhtml /wcs/resources/marketing/springsavings%}
-{%resource.xhtml /wcs/resources/marketing/bogo%}
+{%resource.xhtml /resources/marketing/springsavings%}
+{%resource.xhtml /resources/marketing/bogo%}
 {%endresourcegroup%}
 ```
 
@@ -199,8 +199,8 @@ This variant of the resource statement is primarily used to render the represent
 template output, usually within a espot statement block.
 
 ```django
-{%resource.xhtml /wcs/resources/marketing/{categoryid}/featuredproducts with scrollablepane%}
-{%resource.xhtml /wcs/resources/marketing/bogo%}
+{%resource.xhtml /resources/marketing/{categoryid}/featuredproducts with scrollablepane%}
+{%resource.xhtml /resources/marketing/bogo%}
 ```
 
 The statement resource.json binds the JSON representation of the resource to the context using the
@@ -209,8 +209,8 @@ that such references to resources be made outside control constructs so that the
 pre-process them prior to rendering the template output.
 
 ```django
-{%resource.json /wcs/resources/product/(productid} as prod%}
-{%resource.json /wcs/resources/user/{userid} as user%}
+{%resource.json /resources/product/(productid} as prod%}
+{%resource.json /resources/user/{userid} as user%}
 ```
 
 #### _precondition_*
@@ -257,7 +257,7 @@ the template context.
 Map<String, Object> initContext = new HashMap<String, Object>();
 List<String> names = Arrays.asList("John", "Fred", "Betsy");
 initContext.put("names", names);
-WCSTemplateContextImpl ctx = new WCSTemplateContextImpl(initContext, tg);
+TemplateContextImpl ctx = new TemplateContextImpl(initContext, tg);
 ```
 
 If the template to be rendered resides in "stores/default/guest.html" in the "templates" directory used
