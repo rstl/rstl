@@ -65,22 +65,6 @@
             </plugin>
 
 
-            <!--
-              Strictly speaking, we did not need to generate this for you from
-              the prototype, but we use it to illustrate how you can get
-              the JDK 6 Java compiler to accept 1.5 or 1.6 targeted source code
-              but produce class files that are compatible with JRE 1.4. As
-              Michael Caine might say, "Not a lot of people know that!"
-              -->
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>jsr14</target>
-                    <sourceDirectory>src</sourceDirectory>
-                </configuration>
-            </plugin>
-
             <plugin>
                 
                 <artifactId>maven-assembly-plugin</artifactId>
