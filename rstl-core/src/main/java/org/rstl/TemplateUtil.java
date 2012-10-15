@@ -171,6 +171,8 @@ public class TemplateUtil {
 		javaGenDir.delete();
 		// Create directory structure if it does not exist
 		javaGenDir.mkdirs();
+		
+		File rstlClassPath = new File(TemplateUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 
 		ArrayList<String> templateNames = new ArrayList<String>();
 		List<String> errorList = new ArrayList<String>();
@@ -188,9 +190,9 @@ public class TemplateUtil {
 		File templateMap = new File(templateMapDir,
 				TEMPLATE_MAP_PROPERTY_FILENAME);
 		Properties p = new Properties();
-		String dtlJarLoc = TemplateGroupRegistry.getROTLLocation();
+//		String dtlJarLoc = TemplateGroupRegistry.getROTLLocation();
 		String classPath = "-cp "
-				+ dtlJarLoc
+				+ rstlClassPath
 				+ ((null != additionalClassPath) ? + File.pathSeparatorChar + additionalClassPath
 						: "");
 		if (null != outWriter) {
@@ -240,7 +242,7 @@ public class TemplateUtil {
 			String additionalClassPath) {
 
 		File javaGenDir = new File(tmpJavaDir, getPackageDir());
-
+		File rstlClassPath = new File(TemplateUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 		File srcDir = new File(tmpJavaDir, getPackageDir());
 		File templateMapDir = new File(classDir, getPackageDir());
 		File templateMap = new File(templateMapDir,
@@ -251,9 +253,9 @@ public class TemplateUtil {
 		for (String error: eList) {
 			errWriter.println(error);
 		}
-		String dtlJarLoc = TemplateGroupRegistry.getROTLLocation();
+		//String dtlJarLoc = TemplateGroupRegistry.getROTLLocation();
 		String classPath = "-cp "
-				+ dtlJarLoc + File.pathSeparatorChar
+				+ rstlClassPath + File.pathSeparatorChar
 				+ classDir.getAbsolutePath() + File.pathSeparatorChar
 				+ ((null != additionalClassPath) ? File.pathSeparator + additionalClassPath
 						: "");
