@@ -190,7 +190,7 @@ public class RSTLTest {
 		String input = "{%block a,bc%}{%endblock asbc %}";
 		RSTLParser parser = createParser(input);
 		parser.rule();
-		List<Statement> result = parser.getMain();
+		parser.getMain();
 
 //		assertEquals("Failed to return exception", 1, lexer.getExceptions()
 //				.size());

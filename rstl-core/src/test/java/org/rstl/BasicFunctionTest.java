@@ -90,6 +90,7 @@ public class BasicFunctionTest {
 		f.readFully(bytes);
 		String s = new String(bytes);
 		assertEquals("Incorrect rgroup declaration", "{% rgroup adspot%}\n		{%resource.xhtml /myresource/{x} %}\n	{% endrgroup %}", s);
+		f.close();
 		
 	}
 
