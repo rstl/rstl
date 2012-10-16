@@ -1,0 +1,9 @@
+{%extends "templateservicetest/basiclayout.html"%}
+This is the default home page {{store}}
+{%block leftnav %}
+{%resource.xhtml /resources/store/{storeid}/home %}
+{%endblock%}
+
+{%rgroup centerspot%}
+{%resource.xhtml /resources/store/{storeid}/activity/sale%}
+{%endrgroup%}

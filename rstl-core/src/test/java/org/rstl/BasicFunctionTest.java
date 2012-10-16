@@ -110,4 +110,81 @@ public class BasicFunctionTest {
 		System.out.println("Output\n" +w.toString());
 	}
 	
+	@Test
+	public void testSimpleLayout() {
+		Map<String, Object> init = new HashMap<String, Object>();
+		init.put("storeid", "10101");
+		TemplateContextImpl ctx = new TemplateContextImpl(init, tg);
+		StringWriter w = new StringWriter();
+		tg.render("layouttest/pagewithlayout.ctl", ctx, w);
+		Template t = tg.getTemplate("layouttest/pagewithlayout.html");
+		assertEquals("The layout does not match", "layouttest/mylayout.html", t.getLayoutTemplateName());
+		System.out.println(w.toString());
+		StringWriter w1 = new StringWriter();
+		tg.render("layouttest/pagewithlayoutext.html", ctx, w1);
+		t = tg.getTemplate("layouttest/pagewithlayoutext.html");
+		assertEquals("The layout does not match", "layouttest/mylayout.html", t.getLayoutTemplateName());
+		System.out.println(w1.toString());
+		StringWriter w2 = new StringWriter();
+		tg.render("layouttest/pagewithnewlayoutext.html", ctx, w2);
+		System.out.println(w2.toString());
+		t = tg.getTemplate("layouttest/pagewithnewlayoutext.html");
+		assertEquals("The layout does not match", "layouttest/mynewlayout.html", t.getLayoutTemplateName());
+		t = tg.getTemplate("layouttest/pagewithoutlayout.html");
+		assertEquals("The layout does not match", null, t.getLayoutTemplateName());
+		
+	}
+	
+	@Test
+	public void testExtendedLayout() throws IOException{
+		
+		Map<String, Object> init = new HashMap<String, Object>();
+		init.put("storeid", "10101");
+		TemplateContextImpl ctx = new TemplateContextImpl(init, tg);
+		StringWriter w = new StringWriter();
+		StringWriter w2 = new StringWriter();
+		tg.render("layouttest/pagewithextendedlayout.html", ctx, w);
+		tg.render("layouttest/expectedpagewithextendedlayout.html", ctx, w2);
+		assertEquals("The rendered content is not correct", w2.toString(), w.toString());
+	}
+	
+	
+	@Test
+	public void testIncludeOnce() {
+		TemplateContextImpl ctx = new TemplateContextImpl(null, tg);
+		StringWriter w = new StringWriter();
+		tg.render("includeoncetest/includer.html", ctx, w);
+		assertEquals("Includes do not appear to be correct", 
+				"Lorem Ipsum Included from myinclude.htmlIpsum Slatum No Dos  from myrecursiveinclude.htmlDolum Natis Only once from myinclude2.html ", 
+				w.toString());
+	}
+
+	@Test
+	public void testNestedForsWithCounters() {
+		String templateName = "basicfunctiontest/nestedfor.html";
+		StringWriter w = new StringWriter();
+		Map<String, Object> foo = new HashMap<String, Object>();
+		List<String> names = Arrays.asList("Hello", "Abcd", "Foobar");
+		foo.put("List", names);
+		TemplateContextImpl ctx = new TemplateContextImpl(foo, tg);
+		tg.render(templateName, ctx, w);
+		assertEquals("template output does not match", "Hello 0 true false Hello 0 true false Abcd 1 false false Foobar 2 false true  Hello 0 true falseAbcd 1 false false Hello 0 true false Abcd 1 false false Foobar 2 false true  Abcd 1 false falseFoobar 2 false true Hello 0 true false Abcd 1 false false Foobar 2 false true  Foobar 2 false true",
+			w.toString());
+		Template t = tg.getTemplate(templateName);
+		assertTrue("Template is null", t != null);
+	}
+	
+	@Test
+	public void testConditionalWithForLoopCounters() {
+		String templateName = "basicfunctiontest/conditionalwithfor.html";
+		StringWriter w = new StringWriter();
+		Map<String, Object> foo = new HashMap<String, Object>();
+		List<String> names = Arrays.asList("Hello", "Abcd", "Foobar");
+		foo.put("List", names);
+		TemplateContextImpl ctx = new TemplateContextImpl(foo, tg);
+		tg.render(templateName, ctx, w);
+		assertEquals("template output does not match", "Hello,Abcd,Foobar", w.toString());	
+	}
+	
+
 }

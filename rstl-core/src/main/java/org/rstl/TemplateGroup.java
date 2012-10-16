@@ -89,7 +89,7 @@ public class TemplateGroup {
 	 *          used. This directory will be deleted on exit.
 	 */
 	public TemplateGroup(String templateSrcDir, String classDir, String tmpJavaDir) {
-		this(templateSrcDir, classDir, null, tmpJavaDir, "");
+		this(templateSrcDir, classDir, tmpJavaDir, "", null);
 	}
 	
 	/**
@@ -108,7 +108,7 @@ public class TemplateGroup {
 	 * 			the name of the template group
 	 */
 	public TemplateGroup(String templateSrcDir, String classDir, String tmpJavaDir, String name) {
-		this(templateSrcDir, classDir, null, tmpJavaDir, name);
+		this(templateSrcDir, classDir, tmpJavaDir, name, null);
 	}
 	
 	/**
@@ -125,19 +125,19 @@ public class TemplateGroup {
 	 *            the directory location where the template classes will be
 	 *            generated and loaded from. If null a generated temp directory
 	 *            will used
-	 * @param parent
-	 *            the template group that will be used to satisfy inheritance
-	 *            relationships and requests for missing templates
 	 * @param tmpJavaDir
 	 *            the temporary directory where the java code for the templates
 	 *            are generated. If null, a generated temp directory will be
 	 *            used. This directory will be deleted on exit.
 	 *  @param name
 	 *            the name of the template group
+	 *  @param parent
+	 *            the template group that will be used to satisfy inheritance
+	 *            relationships and requests for missing templates
 	 * 
 	 */
 	public TemplateGroup(String templateSrcDir, String classDir,
-			TemplateGroup parent, String tmpJavaDir, String name) {
+			 String tmpJavaDir, String name, TemplateGroup parent) {
 		this.name = name;
 		this.templateSrcDir = new File(templateSrcDir);
 		if (null == tmpJavaDir) {
@@ -313,7 +313,7 @@ public class TemplateGroup {
 		String additionalClassPath = null;
 		TemplateGroup ancestor = parentTemplateGroup;
 		while (null != ancestor) {
-			additionalClassPath = ";" + ancestor.getTemplateClassDir();
+			additionalClassPath = File.pathSeparator + ancestor.getTemplateClassDir();
 			ancestor = ancestor.parentTemplateGroup;
 		}
 		_LOGGER.logp(Level.FINE, CLASS_NAME, "update", "The additional class path is computed as " + additionalClassPath);
@@ -352,6 +352,11 @@ public class TemplateGroup {
 	 */
 	public void updateSingleTemplate(String templateName) {
 		String additionalClassPath = null;
+		TemplateGroup ancestor = parentTemplateGroup;
+		while (null != ancestor) {
+			additionalClassPath = File.pathSeparator + ancestor.getTemplateClassDir();
+			ancestor = ancestor.parentTemplateGroup;
+		}
 		ByteArrayOutputStream cout = new ByteArrayOutputStream(),	cerr = new ByteArrayOutputStream();
 		TemplateUtil.compileSingle(templateName, this.templateSrcDir, genTmpDir, templateClassDir, 
 				new PrintWriter(cout), new PrintWriter(cerr), exceptionList, additionalClassPath);

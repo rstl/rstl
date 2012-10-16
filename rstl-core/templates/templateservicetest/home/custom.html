@@ -1,0 +1,11 @@
+{%extends "templateservicetest/home/default.html"%}
+{%precondition google%}
+{%rgroup myrgroup%}myrgroup{%endrgroup%}
+xyz
+<p></p>
+{%rgroup myrgroup%}myrgroup2{%rgroup myrgroup%}{%endrgroup%}{%endrgroup%}
+{%block myblock%}mystuff{%endblock myblock%}
+{%rgroup newrgroup%}
+ {% resource.xhtml /abc/def/{storeId} with mywidget%}
+{%endrgroup%}
+{%include "templateservicetest/home/incl.html"%}
