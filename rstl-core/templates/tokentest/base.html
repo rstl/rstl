@@ -1,0 +1,16 @@
+htmltext
+{%block myblock%}more text here{%endblock myblock%}
+final text
+{%for x in List%}
+	Howdy {{x}}
+	{%block bar%}
+	Got {{x}}
+		{%for x in List%}
+		Also hello {{x}}
+		{%endfor%}
+	Finished with {{x}}
+	{% endblock %}
+	{% rgroup adspot%}
+		{%resource.xhtml /myresource/{x} %}
+	{% endrgroup %}
+{%endfor%}

@@ -42,9 +42,6 @@ public class TemplateGroup {
 	static final private String STOREROOT = "store/";
 	private static final int MAX_BUF_SIZ = 16384;
 
-
-	// Map of store to template loaders
-	static private Map<String, TemplateGroup> instanceMap = new HashMap<String, TemplateGroup>();
 	
 	private String name = "";
 	private File templateSrcDir;
@@ -375,9 +372,8 @@ public class TemplateGroup {
 	
 	private void createTemplateMaps() {
 		templateMap = new HashMap<String, List<String>>();
-		Enumeration<String> templateNames = (Enumeration<String>) templateClassMap.propertyNames();
-		while(templateNames.hasMoreElements()) {
-			String templateName = templateNames.nextElement();
+		Set<String> templateNames =  templateClassMap.stringPropertyNames();
+		for (String templateName: templateNames) {
 			int baseIndex = templateName.lastIndexOf('/');
 			String resourceName, resourceTemplate;
 			if (baseIndex != -1) {
@@ -414,11 +410,10 @@ public class TemplateGroup {
 			List<String> availableTemplates = templateMap.get(resourceName);
 			List<String> orderedTemplates = new ArrayList<String>();
 			if (!templOrder.isEmpty()) {
-				Enumeration<String> orderedList = (Enumeration<String>)templOrder.propertyNames();
-				while (orderedList.hasMoreElements()) {
-					String templateName = orderedList.nextElement();
-					if (availableTemplates.contains(templateName)) {
-						orderedTemplates.add(templateName);
+				Set<String> orderedList = templOrder.stringPropertyNames();
+				for (String orderedTemplateName : orderedList) {
+					if (availableTemplates.contains(orderedTemplateName)) {
+						orderedTemplates.add(orderedTemplateName);
 					}
 				}	
 			} else {

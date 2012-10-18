@@ -8,7 +8,7 @@ package org.rstl;
  * A reference to an element in a template and where it is defined or referenced
  *
  */
-public class SourceRef implements Comparable {
+public class SourceRef implements Comparable<SourceRef> {
 	/* The name of the identifier */
 	private String identifier;
 	private String sourceTemplate;
@@ -87,7 +87,7 @@ public class SourceRef implements Comparable {
 		return identifier.hashCode();
 	}
 
-	public int compareTo(Object obj) {
+	public int compareTo(SourceRef obj) {
 		if (obj == this)
 			return 0;
 

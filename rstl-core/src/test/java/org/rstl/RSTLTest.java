@@ -191,10 +191,6 @@ public class RSTLTest {
 		RSTLParser parser = createParser(input);
 		parser.rule();
 		parser.getMain();
-
-//		assertEquals("Failed to return exception", 1, lexer.getExceptions()
-//				.size());
-
 	}
 
 	@Test
