@@ -1,0 +1,8 @@
+{%extends "basicfunctiontest/base.html"%}
+{%block bar%}
+parent{%block.super%}
+{%for x in List%}
+overriden {{x}}
+inside for loop parent{%block.super%} 
+{%endfor%}
+{%endblock%}

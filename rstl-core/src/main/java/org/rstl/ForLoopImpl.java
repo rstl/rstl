@@ -10,7 +10,6 @@ import java.util.List;
  * The definition of a For loop 
  */
 public class ForLoopImpl extends GenericStatementImpl implements ForLoop {
-	private static int idgen = 0;
 	private String collectionName;
 	private String key;
 	private String value;
