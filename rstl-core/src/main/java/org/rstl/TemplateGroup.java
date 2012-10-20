@@ -7,7 +7,6 @@ package org.rstl;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,7 +16,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +29,8 @@ import java.util.logging.Logger;
 import org.rstl.context.TemplateContext;
 import org.rstl.context.TemplateContextImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Template compilation and rendering functionality for a group of colocated
  * templates.
@@ -38,13 +38,11 @@ import org.rstl.context.TemplateContextImpl;
 public class TemplateGroup {
 	private static final String CLASS_NAME = TemplateGroup.class.getCanonicalName();
 	private static final Logger _LOGGER = Logger.getLogger(CLASS_NAME);
-	static final private String TEMPLATE_PRIORITY_FILENAME = "templateorder.properties";
+	static final private String TEMPLATE_PRIORITY_FILENAME = "templateorder.json";
 	static final private String STOREROOT = "store/";
 	private static final int MAX_BUF_SIZ = 16384;
+	private static final ObjectMapper jom = new ObjectMapper();
 
-
-	// Map of store to template loaders
-	static private Map<String, TemplateGroup> instanceMap = new HashMap<String, TemplateGroup>();
 	
 	private String name = "";
 	private File templateSrcDir;
@@ -89,7 +87,7 @@ public class TemplateGroup {
 	 *          used. This directory will be deleted on exit.
 	 */
 	public TemplateGroup(String templateSrcDir, String classDir, String tmpJavaDir) {
-		this(templateSrcDir, classDir, null, tmpJavaDir, "");
+		this(templateSrcDir, classDir, tmpJavaDir, "", null);
 	}
 	
 	/**
@@ -108,7 +106,7 @@ public class TemplateGroup {
 	 * 			the name of the template group
 	 */
 	public TemplateGroup(String templateSrcDir, String classDir, String tmpJavaDir, String name) {
-		this(templateSrcDir, classDir, null, tmpJavaDir, name);
+		this(templateSrcDir, classDir, tmpJavaDir, name, null);
 	}
 	
 	/**
@@ -125,19 +123,19 @@ public class TemplateGroup {
 	 *            the directory location where the template classes will be
 	 *            generated and loaded from. If null a generated temp directory
 	 *            will used
-	 * @param parent
-	 *            the template group that will be used to satisfy inheritance
-	 *            relationships and requests for missing templates
 	 * @param tmpJavaDir
 	 *            the temporary directory where the java code for the templates
 	 *            are generated. If null, a generated temp directory will be
 	 *            used. This directory will be deleted on exit.
 	 *  @param name
 	 *            the name of the template group
+	 *  @param parent
+	 *            the template group that will be used to satisfy inheritance
+	 *            relationships and requests for missing templates
 	 * 
 	 */
 	public TemplateGroup(String templateSrcDir, String classDir,
-			TemplateGroup parent, String tmpJavaDir, String name) {
+			 String tmpJavaDir, String name, TemplateGroup parent) {
 		this.name = name;
 		this.templateSrcDir = new File(templateSrcDir);
 		if (null == tmpJavaDir) {
@@ -313,7 +311,7 @@ public class TemplateGroup {
 		String additionalClassPath = null;
 		TemplateGroup ancestor = parentTemplateGroup;
 		while (null != ancestor) {
-			additionalClassPath = ";" + ancestor.getTemplateClassDir();
+			additionalClassPath = File.pathSeparator + ancestor.getTemplateClassDir();
 			ancestor = ancestor.parentTemplateGroup;
 		}
 		_LOGGER.logp(Level.FINE, CLASS_NAME, "update", "The additional class path is computed as " + additionalClassPath);
@@ -352,6 +350,11 @@ public class TemplateGroup {
 	 */
 	public void updateSingleTemplate(String templateName) {
 		String additionalClassPath = null;
+		TemplateGroup ancestor = parentTemplateGroup;
+		while (null != ancestor) {
+			additionalClassPath = File.pathSeparator + ancestor.getTemplateClassDir();
+			ancestor = ancestor.parentTemplateGroup;
+		}
 		ByteArrayOutputStream cout = new ByteArrayOutputStream(),	cerr = new ByteArrayOutputStream();
 		TemplateUtil.compileSingle(templateName, this.templateSrcDir, genTmpDir, templateClassDir, 
 				new PrintWriter(cout), new PrintWriter(cerr), exceptionList, additionalClassPath);
@@ -370,9 +373,8 @@ public class TemplateGroup {
 	
 	private void createTemplateMaps() {
 		templateMap = new HashMap<String, List<String>>();
-		Enumeration<String> templateNames = (Enumeration<String>) templateClassMap.propertyNames();
-		while(templateNames.hasMoreElements()) {
-			String templateName = templateNames.nextElement();
+		Set<String> templateNames =  templateClassMap.stringPropertyNames();
+		for (String templateName: templateNames) {
 			int baseIndex = templateName.lastIndexOf('/');
 			String resourceName, resourceTemplate;
 			if (baseIndex != -1) {
@@ -394,26 +396,21 @@ public class TemplateGroup {
 		for (String resourceName :templateMap.keySet()) {
 			File resDir = new File(templateSrcDir, resourceName);
 			File priorityFile = new File(resDir, TEMPLATE_PRIORITY_FILENAME);
-			Properties templOrder = new Properties();
+			List<String> templOrder = new ArrayList<String>();
 			if (priorityFile.exists()) {
 				try {
-					templOrder.load(new FileInputStream(priorityFile));
-				} catch (FileNotFoundException e) {
+					templOrder = jom.readValue(priorityFile, ArrayList.class);
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} 
 			}
 			List<String> availableTemplates = templateMap.get(resourceName);
 			List<String> orderedTemplates = new ArrayList<String>();
 			if (!templOrder.isEmpty()) {
-				Enumeration<String> orderedList = (Enumeration<String>)templOrder.propertyNames();
-				while (orderedList.hasMoreElements()) {
-					String templateName = orderedList.nextElement();
-					if (availableTemplates.contains(templateName)) {
-						orderedTemplates.add(templateName);
+				for (String orderedTemplateName : templOrder) {
+					if (availableTemplates.contains(orderedTemplateName)) {
+						orderedTemplates.add(orderedTemplateName);
 					}
 				}	
 			} else {

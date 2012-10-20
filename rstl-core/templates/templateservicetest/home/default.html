@@ -1,0 +1,12 @@
+htmltext
+{%block myblock%}more text here{%endblock myblock%}
+final text
+{%for x in List%}
+	Howdy {{x}}
+	{%block bar%}
+		Got {{x}}
+		{%for x in List%}
+			Also hello {{x}}
+		{%endfor%}
+	{%endblock%}
+{%endfor%}

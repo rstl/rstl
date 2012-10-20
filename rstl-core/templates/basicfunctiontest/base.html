@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+{%block myblock%}head content goes here{%endblock myblock%}
+</head>
+<body>
+<ul>
+{%for x in List%}
+<li>
+	Outer Loop: {{x}}
+	{%block bar%}
+		Outer Loop - scope Block: {{x}}
+		<ol>
+		{%for x in List%}
+		<li>
+		Inner Loop: {{x}}
+		</li>
+		{%endfor%}
+		</ol>
+		Outer Loop - after Block {{x}}
+	{% endblock %}
+	{% rgroup adspot%}
+		{%resource.xhtml /myresource/{x} %}
+	{% endrgroup %}
+</li>
+{%endfor%}
+</ul>
+</body>
+</html>
