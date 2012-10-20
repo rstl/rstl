@@ -47,12 +47,12 @@ public class TemplateServiceTest {
 		//Expected output
 		StringWriter w2 = new StringWriter();
 		tg.render("templateservicetest/home/expectedcustom.html", null, w2);
-		assertEquals("Output of template templateservicetest/home/xyz.ctl does not match1", w2.toString(), w.toString());
+		assertEquals("Output of template templateservicetest/home/custom.html does not match", w2.toString(), w.toString());
 		
 		Template template = tg.getTemplate(templateName);
 		StringWriter w3 = new StringWriter();
 		template.render(ctx, w3, false);
-		assertEquals("Output of template templateservicetest/home/custom.html does not match2", w2.toString(), w3.toString());
+		assertEquals("Output of template templateservicetest/home/custom.html using template.render does not match", w2.toString(), w3.toString());
 		
 		assertEquals("Template name does not match", templateName, template.getTemplateName());
 		assertEquals("Template blocks mismatch", 3, template.getBlockRefs().size());

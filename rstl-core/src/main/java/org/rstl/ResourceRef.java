@@ -25,11 +25,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.rstl.context.TemplateContext;
 import org.rstl.resource.client.ResourceRegistry;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
@@ -41,6 +39,7 @@ public class ResourceRef {
 	private static final Logger _LOGGER = Logger.getLogger(CLASS_NAME);
 	private static final String RESOURCE_PREFIX = "res_";
 	private static final boolean RESOURCE_FETCHED = true;
+	private static final ObjectMapper jom = new ObjectMapper();
 
 	private String resourceName;
 	private String widgetName;
@@ -158,9 +157,8 @@ public class ResourceRef {
 						&& format.equalsIgnoreCase("json")
 						&& variableName != null & !variableName.isEmpty()) {
 					
-					JSONTokener jTok = new JSONTokener(reader);
 					try {
-						JSONObject jObj = new JSONObject(jTok);
+						Map<String, Object> jObj = jom.readValue(reader, Map.class);
 					
 						jObj.put("resourceid", resolvedResourceName);
 						if (null != templateInfo) {
@@ -172,7 +170,7 @@ public class ResourceRef {
 						}
 
 						ctxt.put(variableName, jObj);
-					} catch (JSONException jex) {
+					} catch (Exception jex) {
 						// Log the exception
 					}
 					

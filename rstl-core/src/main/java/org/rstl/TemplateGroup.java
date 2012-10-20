@@ -7,7 +7,6 @@ package org.rstl;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,7 +16,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +29,8 @@ import java.util.logging.Logger;
 import org.rstl.context.TemplateContext;
 import org.rstl.context.TemplateContextImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Template compilation and rendering functionality for a group of colocated
  * templates.
@@ -38,9 +38,10 @@ import org.rstl.context.TemplateContextImpl;
 public class TemplateGroup {
 	private static final String CLASS_NAME = TemplateGroup.class.getCanonicalName();
 	private static final Logger _LOGGER = Logger.getLogger(CLASS_NAME);
-	static final private String TEMPLATE_PRIORITY_FILENAME = "templateorder.properties";
+	static final private String TEMPLATE_PRIORITY_FILENAME = "templateorder.json";
 	static final private String STOREROOT = "store/";
 	private static final int MAX_BUF_SIZ = 16384;
+	private static final ObjectMapper jom = new ObjectMapper();
 
 	
 	private String name = "";
@@ -395,23 +396,19 @@ public class TemplateGroup {
 		for (String resourceName :templateMap.keySet()) {
 			File resDir = new File(templateSrcDir, resourceName);
 			File priorityFile = new File(resDir, TEMPLATE_PRIORITY_FILENAME);
-			Properties templOrder = new Properties();
+			List<String> templOrder = new ArrayList<String>();
 			if (priorityFile.exists()) {
 				try {
-					templOrder.load(new FileInputStream(priorityFile));
-				} catch (FileNotFoundException e) {
+					templOrder = jom.readValue(priorityFile, ArrayList.class);
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} 
 			}
 			List<String> availableTemplates = templateMap.get(resourceName);
 			List<String> orderedTemplates = new ArrayList<String>();
 			if (!templOrder.isEmpty()) {
-				Set<String> orderedList = templOrder.stringPropertyNames();
-				for (String orderedTemplateName : orderedList) {
+				for (String orderedTemplateName : templOrder) {
 					if (availableTemplates.contains(orderedTemplateName)) {
 						orderedTemplates.add(orderedTemplateName);
 					}
