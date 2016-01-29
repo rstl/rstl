@@ -1,6 +1,3 @@
-/*
- * Copyright IBM Corp. 2012
- */
 
 package org.rstl;
 

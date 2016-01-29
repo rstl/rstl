@@ -7,7 +7,7 @@
 
     <name>Resource Oriented Template Language Engine</name>
 
-    <version>0.1</version>
+    <version>0.2</version>
 
     <packaging>jar</packaging>
     <url>http://rstlang.org</url>
@@ -16,6 +16,12 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
+            <version>3.5.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>stringtemplate</artifactId>
             <version>3.2</version>
             <scope>compile</scope>
         </dependency>
@@ -30,9 +36,9 @@
 			<version>3.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jdt.core.compiler</groupId>
-			<artifactId>ecj</artifactId>
-			<version>3.7.2</version>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>org.eclipse.jdt.core</artifactId>
+			<version>3.10.0</version>
 		</dependency>
 		<dependency>
 		      <groupId>junit</groupId>
@@ -62,7 +68,7 @@
 
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr3-maven-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.5.2</version>
                 <executions>
                     <execution>
                         <goals>

@@ -1,6 +1,3 @@
-/*
- * Copyright IBM Corp. 2012
- */
 
 package org.rstl;
 
@@ -22,7 +19,8 @@ import java.util.regex.Pattern;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.eclipse.jdt.internal.compiler.batch.Main;
+import org.eclipse.jdt.core.compiler.CompilationProgress;
+import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 
 public class TemplateUtil {
 	private static final String CLASS_NAME = TemplateUtil.class.getCanonicalName();
@@ -255,11 +253,12 @@ public class TemplateUtil {
 			p.put(templateName, getClassName(templateName));
 		}
 		
-		String compileStr = "-5 " + classPath + " -nowarn " + sb.toString()
+		String compileStr = "-1.7 " + classPath + " -nowarn " + sb.toString()
 				+ " -d " + classDir.getAbsolutePath();
 		_LOGGER.logp(Level.FINE, CLASS_NAME, "compile", "The compile string is :" + compileStr);
 		System.out.println("The compile str is " + compileStr);
-		Main.compile(compileStr, outWriter, errWriter);
+		CompilationProgress progress = null;
+		BatchCompiler.compile(compileStr, outWriter, errWriter, progress);
 
 		try {
 			templateMap.createNewFile();
